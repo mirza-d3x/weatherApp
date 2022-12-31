@@ -12,18 +12,21 @@ class Apis {
         Uri.parse(
             'https://api.weatherapi.com/v1/current.json?key=c0dbb6f1794640eeabf103014222805&q=$city&aqi=no'),
         headers: {});
+    // print(response.body);
     return GetWeatherDataModel.fromJson(jsonDecode(response.body));
   }
 
   Future<GetIpModel> getIpAddress() async {
     Response response =
         await get(Uri.parse('https://api.ipify.org/?format=json'), headers: {});
+    // print(response.body);
     return GetIpModel.fromJson(jsonDecode(response.body));
   }
 
   Future<GetUserIpDataModel> getDataFromIp({required String ip}) async {
     Response response =
         await get(Uri.parse('https://ipinfo.io/$ip/geo'), headers: {});
+    // print(response.body);
     return GetUserIpDataModel.fromJson(jsonDecode(response.body));
   }
 }

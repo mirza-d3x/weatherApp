@@ -9,8 +9,4 @@ class SaveWeatherDataInDbEvent extends WeatherDbEvent {
   SaveWeatherDataInDbEvent({required this.getWeatherDataModel});
 }
 
-class GetWeatherDataFromDbEvent extends WeatherDbEvent {
-  final GetWeatherDataModel getWeatherDataModel;
-
-  GetWeatherDataFromDbEvent({required this.getWeatherDataModel});
-}
+class GetWeatherDataFromDbEvent extends WeatherDbEvent {}

@@ -41,7 +41,7 @@ class ApiDataBloc extends Bloc<ApiDataEvent, ApiDataState> {
       emit(UserDataLoading());
       try {
         getWeatherDataModel = await apis.getWeatherData(city: event.city);
-        emit(UserDataLoaded());
+        emit(WeatherDataLoaded());
       } catch (e) {
         emit(IpAddressFailed());
       }

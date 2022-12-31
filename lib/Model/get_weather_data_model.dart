@@ -1,6 +1,8 @@
+import 'package:hive/hive.dart';
+part 'get_weather_data_model.g.dart';
 /// location : {"name":"London","region":"City of London, Greater London","country":"United Kingdom","lat":51.52,"lon":-0.11,"tz_id":"Europe/London","localtime_epoch":1672372429,"localtime":"2022-12-30 3:53"}
 /// current : {"last_updated_epoch":1672371900,"last_updated":"2022-12-30 03:45","temp_c":8.0,"temp_f":46.4,"is_day":0,"condition":{"text":"Partly cloudy","icon":"//cdn.weatherapi.com/weather/64x64/night/116.png","code":1003},"wind_mph":8.1,"wind_kph":13.0,"wind_degree":180,"wind_dir":"S","pressure_mb":1004.0,"pressure_in":29.65,"precip_mm":0.0,"precip_in":0.0,"humidity":87,"cloud":75,"feelslike_c":4.7,"feelslike_f":40.4,"vis_km":10.0,"vis_miles":6.0,"uv":1.0,"gust_mph":21.7,"gust_kph":34.9}
-
+@HiveType(typeId: 1)
 class GetWeatherDataModel {
   GetWeatherDataModel({
       this.location, 

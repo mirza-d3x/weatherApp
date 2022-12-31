@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:weather_lilac/Application/Bloc/ApiData/api_data_bloc.dart';
 import 'package:weather_lilac/Application/Bloc/WeatherDb/weather_db_bloc.dart';
 import 'package:weather_lilac/Model/get_ip_model.dart';
@@ -16,19 +17,31 @@ class ScreeSplash extends StatefulWidget {
 
 class _ScreeSplashState extends State<ScreeSplash> {
   @override
-  void initState() {
-    // Future.delayed(
-    //   const Duration(seconds: 3),
-    //   () {
-    //     Navigator.of(context).pushAndRemoveUntil(
-    //         MaterialPageRoute(
-    //           builder: (context) => ScreenDashBoard(),
-    //         ),
-    //         (route) => false);
-    //   },
-    // );
-    BlocProvider.of<ApiDataBloc>(context).add(GetUserIpEvent());
+  void initState()  {
+    checkData();
     super.initState();
+  }
+
+  checkData() async {
+    var weatherBox = await Hive.openBox<GetWeatherDataModel>('weather');
+
+    if (weatherBox.values.isNotEmpty) {
+      Future.delayed(
+        const Duration(seconds: 3),
+        () {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) => ScreenDashBoard(),
+              ),
+              (route) => false);
+        },
+      );
+      await weatherBox.close();
+    } else {
+      await Hive.deleteFromDisk();
+      await Hive.deleteBoxFromDisk('weather');
+      BlocProvider.of<ApiDataBloc>(context).add(GetUserIpEvent());
+    }
   }
 
   late GetIpModel getIpModel;
@@ -60,7 +73,7 @@ class _ScreeSplashState extends State<ScreeSplash> {
               if (state is WeatherDataLoaded) {
                 getWeatherDataModel =
                     BlocProvider.of<ApiDataBloc>(context).getWeatherDataModel;
-print('Hive =====================================');
+                print('Hive =====================================');
                 BlocProvider.of<WeatherDbBloc>(context).add(
                     SaveWeatherDataInDbEvent(
                         getWeatherDataModel: getWeatherDataModel));

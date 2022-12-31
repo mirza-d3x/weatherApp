@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_lilac/Application/Bloc/ApiData/api_data_bloc.dart';
+import 'package:weather_lilac/Application/Bloc/WeatherDb/weather_db_bloc.dart';
+import 'package:weather_lilac/Model/get_ip_model.dart';
+import 'package:weather_lilac/Model/get_user_ip_data_model.dart';
+import 'package:weather_lilac/Model/get_weather_data_model.dart';
 import 'package:weather_lilac/Presentation/Dashboard/dashboard_screen.dart';
 
 class ScreeSplash extends StatefulWidget {
@@ -11,27 +17,74 @@ class ScreeSplash extends StatefulWidget {
 class _ScreeSplashState extends State<ScreeSplash> {
   @override
   void initState() {
-    Future.delayed(
-      const Duration(seconds: 3),
-      () {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => ScreenDashBoard(),
-            ),
-            (route) => false);
-      },
-    );
+    // Future.delayed(
+    //   const Duration(seconds: 3),
+    //   () {
+    //     Navigator.of(context).pushAndRemoveUntil(
+    //         MaterialPageRoute(
+    //           builder: (context) => ScreenDashBoard(),
+    //         ),
+    //         (route) => false);
+    //   },
+    // );
+    BlocProvider.of<ApiDataBloc>(context).add(GetUserIpEvent());
     super.initState();
   }
 
+  late GetIpModel getIpModel;
+  late GetUserIpDataModel getUserIpDataModel;
+  late GetWeatherDataModel getWeatherDataModel;
+
+  // var weatherBox = Hive.box<GetWeatherDataModel>('weather');
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.purple,
-      body: Center(
-        child: Text(
-          'Lilac Flutter Assignment',
-          style: TextStyle(fontSize: 26, color: Colors.white),
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ApiDataBloc, ApiDataState>(
+            listener: (context, state) {
+              print(state);
+              if (state is IpAddressLoaded) {
+                getIpModel = BlocProvider.of<ApiDataBloc>(context).getUserIp;
+                BlocProvider.of<ApiDataBloc>(context)
+                    .add(GetUserDataFromIpEvent(ip: getIpModel.ip!));
+              }
+              if (state is UserDataLoaded) {
+                getUserIpDataModel =
+                    BlocProvider.of<ApiDataBloc>(context).getUserIpDataModel;
+                BlocProvider.of<ApiDataBloc>(context)
+                    .add(GetWeatherDataEvent(city: getUserIpDataModel.city!));
+              }
+              if (state is WeatherDataLoaded) {
+                getWeatherDataModel =
+                    BlocProvider.of<ApiDataBloc>(context).getWeatherDataModel;
+print('Hive =====================================');
+                BlocProvider.of<WeatherDbBloc>(context).add(
+                    SaveWeatherDataInDbEvent(
+                        getWeatherDataModel: getWeatherDataModel));
+              }
+            },
+          ),
+          BlocListener<WeatherDbBloc, WeatherDbState>(
+            listener: (context, state) {
+              print(state);
+              if (state is DataSaved) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => ScreenDashBoard(),
+                    ),
+                    (route) => false);
+              }
+            },
+          ),
+        ],
+        child: const Center(
+          child: Text(
+            'Lilac Flutter Assignment',
+            style: TextStyle(fontSize: 26, color: Colors.white),
+          ),
         ),
       ),
     );

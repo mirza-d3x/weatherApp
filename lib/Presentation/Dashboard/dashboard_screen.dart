@@ -23,6 +23,7 @@ class _ScreenDashBoardState extends State<ScreenDashBoard> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,

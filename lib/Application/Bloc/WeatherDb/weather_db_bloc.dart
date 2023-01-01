@@ -22,8 +22,8 @@ class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
       try {
         if (weatherBox.isEmpty) {
           weatherBox.add(jsonEncode(event.getWeatherDataModel.toJson()));
-        } else {
-          null;
+        } else if(weatherBox.isNotEmpty) {
+          weatherBox.putAt(0, jsonEncode(event.getWeatherDataModel.toJson()));
         }
         emit(DataSaved());
       } catch (e) {

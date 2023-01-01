@@ -16,3 +16,5 @@ class DataLoading extends WeatherDbState {}
 class DataLoaded extends WeatherDbState {}
 
 class DateFailed extends WeatherDbState {}
+
+class SearchDataLoaded extends WeatherDbState {}

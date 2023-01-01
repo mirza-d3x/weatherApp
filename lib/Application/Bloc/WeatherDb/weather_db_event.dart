@@ -10,3 +10,9 @@ class SaveWeatherDataInDbEvent extends WeatherDbEvent {
 }
 
 class GetWeatherDataFromDbEvent extends WeatherDbEvent {}
+
+class SearchWeatherData extends WeatherDbEvent {
+  final String query;
+
+  SearchWeatherData(this.query);
+}

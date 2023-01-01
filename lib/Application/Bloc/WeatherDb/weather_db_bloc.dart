@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -12,22 +12,22 @@ part 'weather_db_state.dart';
 
 class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
   late GetWeatherDataModel getWeatherDataModel;
+  late Current currentModel;
+  List searchResults = [];
 
   WeatherDbBloc() : super(WeatherDbInitial()) {
     on<SaveWeatherDataInDbEvent>((event, emit) async {
       var weatherBox = await Hive.openBox<Object>('weather');
-      print('HiveBloc==============================================');
       emit(DataSavingOnDb());
       try {
-        if(weatherBox.isEmpty){
-          weatherBox.add(event.getWeatherDataModel.toJson());
+        if (weatherBox.isEmpty) {
+          weatherBox.add(jsonEncode(event.getWeatherDataModel.toJson()));
+        } else {
+          null;
         }
-
-        // weatherBox.clear();
-        // weatherBox.close();
         emit(DataSaved());
       } catch (e) {
-        print('$e============================================');
+        log(e.toString());
         emit(DataSavingFailed());
       }
     });
@@ -36,24 +36,34 @@ class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
       var weatherBox = await Hive.openBox<Object>('weather');
       emit(DataLoading());
       try {
-        // print(weatherBox.values.single.);
-        print('==Before======================================');
-
-print(jsonEncode(weatherBox.values.first.toString().split('(').last.split(')').first));
-print(weatherBox.values.toString().split('gust_kph').last.split(')').first);
-print(jsonDecode(jsonDecode(weatherBox.values.first.toString())));
-        print('========================================');
-        print('========Before Model================================');
-        // getWeatherDataModel= getWeatherDataModelFromJson(weatherBox.values.first.toString());
-     // getWeatherDataModel = GetWeatherDataModel.fromJson(jsonDecode(jsonEncode(weatherBox.values.first.toString().split('(').last.split(')').first)));
-     getWeatherDataModel = GetWeatherDataModel.fromJson(jsonDecode(jsonDecode(jsonEncode(weatherBox.values.first.toString()))));
-        print('========After Model================================');
-      // getWeatherDataModel =  GetWeatherDataModel.fromJson(jsonDecode(weatherBox.values.toString()));
-      // getWeatherDataModel =  weatherBox.values.single;
-        // getWeatherDataModel = weatherBox.values;
+        getWeatherDataModel = GetWeatherDataModel.fromJson(
+            jsonDecode(weatherBox.values.first.toString()));
         emit(DataLoaded());
       } catch (e) {
-        print(e.toString() + '------------------------------------------------------------------');
+        log(e.toString());
+        emit(DateFailed());
+      }
+    });
+
+    on<SearchWeatherData>((event, emit) async {
+      var weatherBox = await Hive.openBox<Object>('weather');
+      emit(DataLoading());
+      try {
+        getWeatherDataModel = GetWeatherDataModel.fromJson(
+            jsonDecode(weatherBox.values.first.toString()));
+        // searchResults.addAll()
+        print(weatherBox.values.first);
+        print('=================================================================');
+        print('=================================================================');
+        print('=================================================================');
+        print(weatherBox.values.map((e) => e == event.query));
+        print(getWeatherDataModel.current!.toJson().containsKey(event.query));
+        print(getWeatherDataModel.current!.toJson().keys.where((element) => element.contains(event.query)).toString());
+        searchResults = getWeatherDataModel.current!.toJson().keys.where((element) => element.contains(event.query)).toList();
+        print(searchResults);
+        emit(SearchDataLoaded());
+      } catch (e) {
+        log(e.toString());
         emit(DateFailed());
       }
     });

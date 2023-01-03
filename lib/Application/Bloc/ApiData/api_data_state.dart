@@ -9,6 +9,8 @@ class WeatherDataLoading extends ApiDataState {}
 
 class WeatherDataLoaded extends ApiDataState {}
 
+class NoMatchingLocationFound extends ApiDataState {}
+
 class WeatherDataFailed extends ApiDataState {}
 
 class IpAddressLoading extends ApiDataState {}

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:weather_lilac/Model/get_ip_model.dart';
@@ -43,7 +45,8 @@ class ApiDataBloc extends Bloc<ApiDataEvent, ApiDataState> {
         getWeatherDataModel = await apis.getWeatherData(city: event.city);
         emit(WeatherDataLoaded());
       } catch (e) {
-        emit(IpAddressFailed());
+        log(e.toString());
+        emit(NoMatchingLocationFound());
       }
     });
   }

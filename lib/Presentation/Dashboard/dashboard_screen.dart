@@ -94,7 +94,7 @@ class _ScreenDashBoardState extends State<ScreenDashBoard> {
                         height: mHeight - 220,
                         margin: const EdgeInsets.all(2),
                         padding:
-                            const EdgeInsets.only(top: 5, left: 30, right: 30),
+                            const EdgeInsets.only(top: 5, left: 25, right: 25),
                         glowColor: const Color(0xff00A1FF).withOpacity(0.5),
                         borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(60),
@@ -133,25 +133,26 @@ class _ScreenDashBoardState extends State<ScreenDashBoard> {
                                     const Icon(CupertinoIcons.map_fill,
                                         color: Colors.white),
                                     const SizedBox(
-                                      width: 10,
+                                      width: 5,
                                     ),
                                     Text(
                                       getWeatherDataModel.location!.name!,
+                                      overflow: TextOverflow.fade,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 30,
+                                        fontSize: 26,
                                         color: Colors.white,
                                       ),
                                     ),
                                   ],
                                 ),
-                                const Icon(Icons.more_vert, color: Colors.white)
                               ],
                             ),
                             SizedBox(
                               height: mHeight * .47,
                               child: Stack(
                                 children: [
+                                  
                                   const Image(
                                     image: AssetImage('assets/sunny.png'),
                                     fit: BoxFit.fill,

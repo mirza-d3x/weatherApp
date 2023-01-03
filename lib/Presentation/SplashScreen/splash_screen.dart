@@ -73,10 +73,12 @@ class _ScreeSplashState extends State<ScreeSplash> {
               if (state is WeatherDataLoaded) {
                 getWeatherDataModel =
                     BlocProvider.of<ApiDataBloc>(context).getWeatherDataModel;
-                print('Hive =====================================');
                 BlocProvider.of<WeatherDbBloc>(context).add(
                     SaveWeatherDataInDbEvent(
                         getWeatherDataModel: getWeatherDataModel));
+              }if(state is NoMatchingLocationFound){
+                BlocProvider.of<ApiDataBloc>(context)
+                    .add(GetWeatherDataEvent(city: getUserIpDataModel.region!));
               }
             },
           ),

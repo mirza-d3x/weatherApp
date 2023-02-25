@@ -17,8 +17,8 @@ class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
 
   WeatherDbBloc() : super(WeatherDbInitial()) {
     on<SaveWeatherDataInDbEvent>((event, emit) async {
-      var weatherBox = await Hive.openBox<Object>('weather');
       emit(DataSavingOnDb());
+      var weatherBox = await Hive.openBox<Object>('weather');
       try {
         if (weatherBox.isEmpty) {
           weatherBox.add(jsonEncode(event.getWeatherDataModel.toJson()));
@@ -33,8 +33,8 @@ class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
     });
 
     on<GetWeatherDataFromDbEvent>((event, emit) async {
-      var weatherBox = await Hive.openBox<Object>('weather');
       emit(DataLoading());
+      var weatherBox = await Hive.openBox<Object>('weather');
       try {
         getWeatherDataModel = GetWeatherDataModel.fromJson(
             jsonDecode(weatherBox.values.first.toString()));
@@ -46,8 +46,8 @@ class WeatherDbBloc extends Bloc<WeatherDbEvent, WeatherDbState> {
     });
 
     on<SearchWeatherData>((event, emit) async {
-      var weatherBox = await Hive.openBox<Object>('weather');
       emit(DataLoading());
+      var weatherBox = await Hive.openBox<Object>('weather');
       try {
         getWeatherDataModel = GetWeatherDataModel.fromJson(
             jsonDecode(weatherBox.values.first.toString()));
